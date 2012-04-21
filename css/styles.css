@@ -1,0 +1,15 @@
+#fs_login {
+
+}
+
+#fs_login img {
+	display: inline;
+}
+
+.venue_li {
+	min-height: 50px;
+}
+
+.venue_li p {
+	margin-left: 5px;
+}
