@@ -4,7 +4,7 @@
 	require_once('inc/globals.php');
 	require_once('inc/oauth.php');
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -22,23 +22,30 @@
 	</head> 
 	<body> 
 
-	<div style="margin-left: auto; margin-right: auto; width: 600px; height: 800px; position: relative;">
-		<div data-role="page" id="main_page">
+	<div id="primary_container">
+	<div id="jquery_mobile_content">
+		<div data-role="page" id="main_page" class="page">
 			<div data-role="header"  data-position="inline" class="header">
 				
 			</div>
-			<div data-role="content">	
+			<div data-role="content" class="content">	
 <?php if(!isset($_SESSION['token'])) { ?>
-				<a id="fs_login" href="https://foursquare.com/oauth2/authenticate?client_id=<?php echo FS_CLIENT_ID ?>&response_type=code&redirect_uri=http://localhost/semester_project" data-role="button"><img src="img/fs_logo.png" alt="foursquare login" /> Login</a> 
+				<a id="fs_login" href="https://foursquare.com/oauth2/authenticate?client_id=<?php echo FS_CLIENT_ID ?>&response_type=code&redirect_uri=<?php echo FS_REDIRECT_URI ?>" data-role="button"><img src="img/fs_logo.png" alt="foursquare login" /> Login</a> 
 <?php } else { ?>
-				<ul id="venue_list" data-role="listview" data-theme="g">
-
-				</ul> 
+				<div data-role="fieldcontain">
+					<input type="text" name="zip" id="zip" value="Zip Code" />
+				</div>					
+				<h2>Venues Nearby</h2>
+				<div class="list_container">
+					<ul id="venue_list" data-role="listview" data-inset="true" class="list">
+						<li></li>
+					</ul>
+				</div>
 <?php } ?>
 			</div>
 		</div>
 		
-		<div data-role="page" id="venue_page">
+		<div data-role="page" id="venue_page" class="page">
 			<div data-role="header" data-position="inline" class="header">
 				<a href="#" data-role="button" data-rel="back" data-icon="arrow-l">Back</a>
 					<h1>Check In</h1>
@@ -68,6 +75,7 @@
 			</div>
 		</div>
 		
+		</div>
 		</div>
 
 	</body>

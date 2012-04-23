@@ -1,3 +1,56 @@
+body {
+	background: #000;
+	margin: 0px;
+	padding: 0px;
+}
+
+#primary_container {
+	position: relative;
+	max-width: 600px;
+	min-height: 100%;
+	margin: auto auto; 
+}
+
+#jquery_mobile_content {
+	float: left;
+	clear: both;
+}
+
+.header {
+	height: 120px;
+	background: url('../img/wood_bg.png');
+	border: 0px;
+	border-bottom: #ccc;
+	box-shadow: inset 0 0 10px #000;
+}
+
+.content {
+	border-top: #eee;
+}
+
+.page {
+	background: url('../img/bg.png');
+}
+
+.list_header {
+	position: relative;
+	width: 95%;
+	margin-left: 2.5%;
+}
+
+.list_container {
+	position: relative;
+	width: 95%;
+	margin-left: 2.5%;
+}
+
+.list {
+	position: relative;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-radiys: 20px; !important
+}
+
 #fs_login {
 
 }
@@ -7,9 +60,10 @@
 }
 
 .venue_li {
-	min-height: 50px;
+	opacity: .8;
 }
 
 .venue_li p {
 	margin-left: 5px;
+	min-height: 14px;
 }
