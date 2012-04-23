@@ -25,19 +25,24 @@
 	<div id="primary_container">
 	<div id="jquery_mobile_content">
 		<div data-role="page" id="main_page" class="page">
-			<div data-role="header"  data-position="inline" class="header">
-				
+			<div data-role="header"  data-position="inline" class="header" data-theme="b">
+				<img src="img/fs_deals_logo.png" alt="Foursquare Deals" />
 			</div>
 			<div data-role="content" class="content">	
 <?php if(!isset($_SESSION['token'])) { ?>
 				<a id="fs_login" href="https://foursquare.com/oauth2/authenticate?client_id=<?php echo FS_CLIENT_ID ?>&response_type=code&redirect_uri=<?php echo FS_REDIRECT_URI ?>" data-role="button"><img src="img/fs_logo.png" alt="foursquare login" /> Login</a> 
 <?php } else { ?>
-				<div data-role="fieldcontain">
-					<input type="text" name="zip" id="zip" value="Zip Code" />
-				</div>					
-				<h2>Venues Nearby</h2>
-				<div class="list_container">
-					<ul id="venue_list" data-role="listview" data-inset="true" class="list">
+				<fieldset class="ui-grid-a">
+					<div class="ui-block-a"><h1>Nearby Venues</h1></div>
+					<div class="ui-block-b"><a id="refresh_list" href="#" data-role="button" data-icon="refresh" data-theme="b">Refresh</a></div>	   
+				</fieldset>
+				<div id="no_list">
+					<ul data-role="listview" data-inset="true">
+						<li><h3>No venues found, or your location services have been disabled.</h3></li>
+					</ul>
+				</div>
+				<div id="list_container">
+					<ul id="venue_list" data-role="listview" data-inset="true">
 						<li></li>
 					</ul>
 				</div>
@@ -46,26 +51,37 @@
 		</div>
 		
 		<div data-role="page" id="venue_page" class="page">
-			<div data-role="header" data-position="inline" class="header">
-				<a href="#" data-role="button" data-rel="back" data-icon="arrow-l">Back</a>
-					<h1>Check In</h1>
-				<a id="check_in_btn" href="#" data-role="button" data-icon="check">Check In</a>
+			<div data-role="header" data-position="inline" data-theme="b">
+				<a href="#" data-role="button" data-rel="back" data-icon="arrow-l" data-theme="b">Back</a>
+					<h3>Foursquare Check In</h3>
+				<a id="check_in_btn" href="#" data-role="button" data-icon="check" data-theme="b">Check In</a>
 			</div>
-			<div data-role="content">
+			<div data-role="content" class="content">
 				<div id="venue_info_container">
-					<span id="venue_name"></span>
+					<div id="venue_info_header">
+						<img id="venue_icon" src="https://foursquare.com/img/categories/building/default_64.png" alt="icon" />
+						<h2 id="venue_name"></h2>
+					</div>
+					<fieldset class="ui-grid-a">
+						<div class="ui-block-a">Address:</div>
+						<div class="ui-block-b" id="vi_address"></div>	   
+						<div class="ui-block-a">Phone Number:</div>
+						<div class="ui-block-b" id="vi_phone"></div>	  
+					</fieldset>
 				</div>
-				<div id="comment_container" data-role="fieldcontain">
+				<hr class="divider" />
+				<div data-role="fieldcontain">
 					<input id="venue_id" type="hidden" value="" />
 					<label for="textarea">Comment:</label><br />
-					<textarea name="textarea" id="comments"></textarea>
+					<textarea cols="40" rows="8" name="textarea" id="comments"></textarea>
 				</div>
 			</div>
 		</div>
 		
 		<div data-role="page" id="deals_page">
-			<div data-role="header"  class="header">
-
+			<div data-role="header" data-position="inline" data-theme="b">
+				<h3>Available Deals</h3>
+				<a id="done_btn" href="#" data-role="button" data-icon="check" data-theme="b" class="ui-btn-right">Done</a>
 			</div>
 			<div data-role="content">
 				<div id="deal_info_container">

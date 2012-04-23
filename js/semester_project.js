@@ -7,10 +7,34 @@ jQuery(document).ready(function($) {
 		event.preventDefault();
 		checkIn();
 	});
+	
+	$('.unselected_input').focus(function(event) {
+		$(this).val('');
+		$(this).addClass('selected_input');
+	});
+	
+	$('.unselected_input').blur(function(event) {
+		if($(this).val() == '') {
+			$(this).val($(this).attr('alt'));
+			$(this).removeClass('selected_input');
+		}
+	});
+	
+	$('#refresh_list').click(function(event) {
+		event.preventDefault();
+		location.reload();
+	});
+	
+	$('#done_btn').click(function(event) {
+		event.preventDefault();
+		$.mobile.changePage('#main_page', { transition: 'slide' });
+	});
 });
 
 function setLocation(pos) {
 	loc = pos.coords;
+	$('#no_list').hide();
+	$('#list_container').show();
 	getVenues();
 }
 
@@ -21,7 +45,13 @@ function getVenues(query) {
 		data: 'lat=' + loc.latitude + '&lon=' + loc.longitude + '&query=' + query,
 		dataType: 'html',
 		cache: false,
-		success: function(rsp) { $('#venue_list').empty().append(rsp).listview('refresh'); }
+		success: function(rsp) { 
+			if(rsp) {
+				$('#venue_list').empty().append(rsp).listview('refresh');
+			} else {
+				$('#venue_list').empty().append('<li>No Venues Nearby</li>').listview('refresh');
+			}
+		}
 	});
 }
 
@@ -39,9 +69,24 @@ function getVenueInfo(event, venue_id) {
 
 function displayVenueInfo(rsp) {
 	if(rsp) {
-		var venue_obj = jQuery.parseJSON(rsp);
+		var venue_obj = $.parseJSON(rsp);
 		$('#venue_id').val(venue_obj.response.venue.id);
-		$('#venue_name').empty().append(venue_obj.response.venue.name);
+		$('#venue_name').empty();
+		$('#vi_address').empty();
+		$('#vi_phone').empty();
+		if(venue_obj.response.venue.categories[0])
+			$('#venue_icon').attr('src', venue_obj.response.venue.categories[0].icon.prefix + venue_obj.response.venue.categories[0].icon.sizes[2] + venue_obj.response.venue.categories[0].icon.name);
+		if(venue_obj.response.venue.location.address)
+			$('#vi_address').append(venue_obj.response.venue.location.address + '<br/>');
+		if(venue_obj.response.venue.location.city)
+			$('#vi_address').append(venue_obj.response.venue.location.city);
+		if(venue_obj.response.venue.location.state)
+			$('#vi_address').append(', ' + venue_obj.response.venue.location.state);
+		if(venue_obj.response.venue.location.postalCode)
+			$('#vi_address').append(' ' + venue_obj.response.venue.location.postalCode);
+		if(venue_obj.response.venue.contact.formattedPhone)
+			$('#vi_phone').append(venue_obj.response.venue.contact.formattedPhone);
+		$('#venue_name').append(venue_obj.response.venue.name);
 		$.mobile.changePage('#venue_page', { transition: 'slide' });
 	}
 }
@@ -64,7 +109,7 @@ function getDeals() {
 		data: 'VENUE_ID=' + $('#venue_id').val(), 
 		dataType: 'html',
 		cache: false,
-		success: function(rsp) { displayDeals(false, rsp); }
+		success: function(rsp) { displayDeals('fs_special', rsp); }
 	})
 	$.ajax({
 		type: 'GET',
@@ -72,15 +117,28 @@ function getDeals() {
 		data: 'lat=' + loc.latitude + '&lon=' + loc.longitude + '&venue=' + $('#venue_name').text(), 
 		dataType: 'html',
 		cache: false,
-		success: function(rsp) { displayDeals(true, rsp); }
+		success: function(rsp) { displayDeals('groupon_deal', rsp); }
 	});
 	$.mobile.changePage('#deals_page', { transition: 'slide' });
 }
 
-function displayDeals(groupon_deal, rsp) {
-	if(groupon_deal) {
-		$('#groupon_deal_text').empty().append(rsp);
-	} else {
+function displayDeals(deal_type, rsp) {
+	if(deal_type == 'groupon_deal') {
+		var groupon_obj = $.parseJSON(rsp);
+		if(groupon_obj.announcementTitle) { 
+			$('#groupon_deal_text').empty().append(rsp.announcementTitle);
+		} else {
+			$('#groupon_deal_text').empty().append('<li>No Groupon deals for this location.</li>');
+		}
+	} else if(deal_type == 'fs_special') {
 		$('#fs_special_text').empty().append(rsp);
+		var fs_obj = $.parseJSON(rsp);
+		if(fs_obj.response.specials.count > 0) {
+			for(special in fs_obj.response.specials.items) {
+				$('#fs_special_text').empty().append(special.message);
+			}
+		} else {
+			$('#fs_special_text').empty().append('<li>No Foursquare specials for this location.</li>');
+		}
 	}
 }

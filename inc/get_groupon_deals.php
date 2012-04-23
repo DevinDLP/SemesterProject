@@ -28,11 +28,18 @@
 		$data = curl_exec($ch);
 		
 		curl_close($ch);
-		
-		//echo $data;
-		
+
+		$data_obj = json_decode($data);
 		$venue = $_GET['venue'];
+		$this_venue = '{';
 		
+		foreach($data_obj->deals as $deal) {
+			if(strcasecmp($deal->merchant->name, $venue) == 0)
+				$this_venue .= json_encode($deal);
+		}
 		
+		$this_venue .= '}';
+		
+		echo $this_venue;
 	}
 ?>

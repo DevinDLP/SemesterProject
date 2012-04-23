@@ -17,15 +17,20 @@ body {
 }
 
 .header {
-	height: 120px;
-	background: url('../img/wood_bg.png');
+	max-height: 200px;
 	border: 0px;
-	border-bottom: #ccc;
-	box-shadow: inset 0 0 10px #000;
+	border-bottom: 1px solid #eee;
+}
+
+.header img {
+	position: relative;
+	width: 95%;
+	max-width: 521px;
+	margin-left: 2.5%;
 }
 
 .content {
-	border-top: #eee;
+
 }
 
 .page {
@@ -38,17 +43,20 @@ body {
 	margin-left: 2.5%;
 }
 
-.list_container {
+#list_container, #no_list {
+	display: none;
 	position: relative;
 	width: 95%;
 	margin-left: 2.5%;
 }
 
+#no_list {
+	display: block;
+	text-align: center;
+}
+
 .list {
 	position: relative;
-	border-left: 1px solid #ccc;
-	border-right: 1px solid #ccc;
-	border-radiys: 20px; !important
 }
 
 #fs_login {
@@ -60,10 +68,61 @@ body {
 }
 
 .venue_li {
-	opacity: .8;
+
 }
 
 .venue_li p {
 	margin-left: 5px;
 	min-height: 14px;
+}
+
+.venue_li img {
+	margin-top: 8px;
+	margin-left: 8px;
+}
+
+#venue_info_header {
+	position: relative;
+	float: left;
+	clear: both;
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+#venue_name {
+	position: relative;
+	float: left;
+	clear: right;
+	margin-left: 10px;
+	white-space: normal;
+}
+
+#venue_icon {
+	float: left;
+}
+
+#venue_info_container {
+	position: relative;
+	float: left;
+	clear: both;
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.divider {
+	float: left;
+	clear: both;
+	width: 100%;
+	border: 0px;
+	border-top: 1px dashed #ddd;
+	border-bottom: 1px dashed #888;
+}
+
+.unselected_input {
+	color: #ccc;
+	font-weight: bold;
+}
+
+.selected_input {
+	color: #000 !important;
 }
