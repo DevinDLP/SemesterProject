@@ -32,13 +32,13 @@
 
 		foreach ($data->response->venues as $venue) {
 			echo '<li class="venue_li">';
-			echo '<a href="#" onclick="getVenueInfo(event, \''.$venue->id.'\');">';
+			echo '<a class="venue_link" href="#" alt="'.$venue->id.'">';
 			if($venue->categories)
 				echo '<img src="'.$venue->categories[0]->icon->prefix.$venue->categories[0]->icon->sizes[1].$venue->categories[0]->icon->name.'" alt="icon" />';
 			else
 				echo '<img src="https://foursquare.com/img/categories/building/default_44.png" alt="icon" />';
 			echo '<h3>'.$venue->name.'</h3>';
-			echo '<p> ';
+			echo '<p>';
 			if(isset($venue->location->address)) echo $venue->location->address;
 			echo '</p>';
 			echo '</a></li>';

@@ -2,6 +2,7 @@ body {
 	background: #000;
 	margin: 0px;
 	padding: 0px;
+	height: 100%;
 }
 
 #primary_container {
@@ -17,7 +18,6 @@ body {
 }
 
 .header {
-	max-height: 200px;
 	border: 0px;
 	border-bottom: 1px solid #eee;
 }
@@ -30,7 +30,7 @@ body {
 }
 
 .content {
-
+	position: relative;
 }
 
 .page {
@@ -74,9 +74,8 @@ body {
 	position: relative;
 }
 
-.venue_li a {
-	position: relative;
-	display: block;
+.venue_li:hover {
+	z-index: 3;
 }
 
 .venue_li h3 {
@@ -136,13 +135,14 @@ body {
 	border: 0px;
 	border-top: 1px dashed #ddd;
 	border-bottom: 1px dashed #888;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }
 
-.unselected_input {
-	color: #ccc;
-	font-weight: bold;
-}
-
-.selected_input {
-	color: #000 !important;
+#map_canvas {
+	position: relative;
+	float: left;
+	width: 100%;
+	height: 300px;
+	border: 1px solid #000;
 }

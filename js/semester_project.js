@@ -1,33 +1,20 @@
 var loc;
+var myMap;
+var geocoder;
+var marker;
 
-jQuery(document).ready(function($) {
+$(document).ready(function() {
 	navigator.geolocation.getCurrentPosition(setLocation);
+	geocoder = new google.maps.Geocoder();
 	
 	$('#check_in_btn').click(function(event) {
 		event.preventDefault();
 		checkIn();
 	});
 	
-	$('.unselected_input').focus(function(event) {
-		$(this).val('');
-		$(this).addClass('selected_input');
-	});
-	
-	$('.unselected_input').blur(function(event) {
-		if($(this).val() == '') {
-			$(this).val($(this).attr('alt'));
-			$(this).removeClass('selected_input');
-		}
-	});
-	
 	$('#refresh_list').click(function(event) {
 		event.preventDefault();
 		location.reload();
-	});
-	
-	$('#done_btn').click(function(event) {
-		event.preventDefault();
-		$.mobile.changePage('#main_page', { transition: 'slide' });
 	});
 });
 
@@ -48,6 +35,12 @@ function getVenues(query) {
 		success: function(rsp) { 
 			if(rsp) {
 				$('#venue_list').empty().append('<li data-role="list-divider"><h1>Nearby Venues</h1></li>').append(rsp).listview('refresh');
+				$('.venue_link').each(function(index) {
+					$(this).click(function(event) {
+						event.preventDefault();
+						getVenueInfo($(this).attr('alt'));
+					});
+				});
 			} else {
 				$('#venue_list').empty().append('<li>No Venues Nearby</li>').listview('refresh');
 			}
@@ -55,8 +48,7 @@ function getVenues(query) {
 	});
 }
 
-function getVenueInfo(event, venue_id) {
-	event.preventDefault();
+function getVenueInfo(venue_id) {
 	$.ajax({
 		type: 'GET',
 		url: 'inc/get_venue_info.php',
@@ -70,25 +62,63 @@ function getVenueInfo(event, venue_id) {
 function displayVenueInfo(rsp) {
 	if(rsp) {
 		var venue_obj = $.parseJSON(rsp);
-		$('#venue_id').val(venue_obj.response.venue.id);
+		var address = '';
+		var lat = loc.latitude;
+		var lon = loc.longitude;
+		
 		$('#venue_name').empty();
 		$('#vi_address').empty();
 		$('#vi_phone').empty();
+		
+		if(venue_obj.response.venue.location.address)
+			address += venue_obj.response.venue.location.address;
+		if(venue_obj.response.venue.location.city)
+			address += ' ' + venue_obj.response.venue.location.city;
+		if(venue_obj.response.venue.location.state)
+			address += ', ' + venue_obj.response.venue.location.state;
+		if(venue_obj.response.venue.location.postalCode)
+			address += ' ' + venue_obj.response.venue.location.postalCode;
+		
+		$('#venue_id').val(venue_obj.response.venue.id + '');
+		$('#venue_name').append(venue_obj.response.venue.name + '');
+
 		if(venue_obj.response.venue.categories[0])
 			$('#venue_icon').attr('src', venue_obj.response.venue.categories[0].icon.prefix + venue_obj.response.venue.categories[0].icon.sizes[2] + venue_obj.response.venue.categories[0].icon.name);
-		if(venue_obj.response.venue.location.address)
-			$('#vi_address').append(venue_obj.response.venue.location.address + '<br/>');
-		if(venue_obj.response.venue.location.city)
-			$('#vi_address').append(venue_obj.response.venue.location.city);
-		if(venue_obj.response.venue.location.state)
-			$('#vi_address').append(', ' + venue_obj.response.venue.location.state);
-		if(venue_obj.response.venue.location.postalCode)
-			$('#vi_address').append(' ' + venue_obj.response.venue.location.postalCode);
+		if(address != '')
+			$('#vi_address').append(address + '');
 		if(venue_obj.response.venue.contact.formattedPhone)
-			$('#vi_phone').append(venue_obj.response.venue.contact.formattedPhone);
+			$('#vi_phone').append(venue_obj.response.venue.contact.formattedPhone + '');
 		else
 			$('#vi_phone').append('N/A');
-		$('#venue_name').append(venue_obj.response.venue.name);
+
+		if(venue_obj.response.venue.location.lng && venue_obj.response.venue.location.lat) {
+			lat = venue_obj.response.venue.location.lat;
+			lon = venue_obj.response.venue.location.lng;
+		} else if(venue_obj.response.venue.location.address) {
+			geocoder.geocode( { address: address }, function(results, status) {
+				if(status == google.maps.GeocoderStatus.OK) {
+					lat = results[0].geometry.location.latitude;
+					lon = results[0].geometry.location.longitude;
+				}
+			});
+		}
+		
+		if(!myMap) {
+			myMap = new google.maps.Map(document.getElementById('map_canvas'), {
+				zoom: 18,
+				center: new google.maps.LatLng(lat, lon),
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+			
+			marker = new google.maps.Marker({
+				position: new google.maps.LatLng(lat, lon),
+				map: myMap
+			});
+		} else {
+			myMap.setCenter(new google.maps.LatLng(lat, lon));
+			marker.setPosition(new google.maps.LatLng(lat, lon));
+		}
+		
 		$.mobile.changePage('#venue_page', { transition: 'slide' });
 	}
 }
@@ -113,6 +143,7 @@ function getDeals() {
 		cache: false,
 		success: function(rsp) { displayDeals('fs_special', rsp); }
 	})
+	
 	$.ajax({
 		type: 'GET',
 		url: 'inc/get_groupon_deals.php',
@@ -121,6 +152,7 @@ function getDeals() {
 		cache: false,
 		success: function(rsp) { displayDeals('groupon_deal', rsp); }
 	});
+	
 	$.mobile.changePage('#deals_page', { transition: 'slide' });
 }
 
@@ -128,6 +160,7 @@ function displayDeals(deal_type, rsp) {
 	if(deal_type == 'groupon_deal') {
 		$('#groupon_deal_text').empty().append('<li data-role="list-divider"><h1>Groupon Deals</h1></li>').listview('refresh');
 		var groupon_obj = $.parseJSON(rsp);
+		
 		if(groupon_obj.announcementTitle)
 			$('#groupon_deal_text').append('<li><a href="' + rsp.dealURL + '">' + rsp.announcementTitle + '</a></li>').listview('refresh');
 		else
@@ -135,6 +168,7 @@ function displayDeals(deal_type, rsp) {
 	} else if(deal_type == 'fs_special') {
 		$('#fs_special_text').empty().append('<li data-role="list-divider"><h1>Foursquare Specials</h1></li>').listview('refresh');
 		var fs_obj = $.parseJSON(rsp);
+		
 		if(fs_obj.response.specials.count > 0) {
 			for(special in fs_obj.response.specials.items)
 				$('#fs_special_text').append(special.message).listview('refresh');

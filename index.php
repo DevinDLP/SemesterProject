@@ -8,14 +8,15 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" /> 
-		<title>DIG4503 - Devin de la Parte - Semester Project</title> 
+		<title>DIG4104c - Devin de la Parte - Semester Project</title> 
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script type="text/javascript"  src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
 <?php if(isset($_SESSION['token'])) { ?>
-		<script src="js/semester_project.js"></script>
+		<script type="text/javascript" src="js/semester_project.js"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <?php } ?>
 		<style type="text/css">
-		    @import url('css/styles.css');
+		    @import url('css/reset.css');
             @import url('http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css');
             @import url('css/styles.css');
         </style>
@@ -50,12 +51,18 @@
 				
 				<div data-role="page" id="venue_page" class="page">
 					<div data-role="header" data-position="inline" data-theme="b">
-						<a href="#" data-role="button" data-rel="back" data-icon="arrow-l" data-theme="b">Back</a>
+						<a id="back_btn" data-rel="back" href="#" data-role="button" data-icon="arrow-l" data-theme="b">Back</a>
 							<h3>Check In</h3>
 						<a id="check_in_btn" href="#" data-role="button" data-icon="check" data-theme="b">Check In</a>
 					</div>
 					<div data-role="content" class="content">
 						<div id="venue_info_container">
+							<fieldset data-role="fieldcontain">
+								<input id="venue_id" type="hidden" value="" />
+								<label for="comments">Comment:</label>
+								<textarea name="comments" id="comments"></textarea>
+							</fieldset>
+							<hr class="divider" />
 							<div id="venue_info_header">
 								<img id="venue_icon" src="https://foursquare.com/img/categories/building/default_64.png" alt="icon" />
 								<h2 id="venue_name"></h2>
@@ -66,27 +73,23 @@
 								<div class="ui-block-a">Phone Number:</div>
 								<div class="ui-block-b" id="vi_phone"></div>	  
 							</fieldset>
+							<hr class="divider" />
+							<div id="map_canvas"></div>
 						</div>
-						<hr class="divider" />
-						<fieldset data-role="fieldcontain">
-							<input id="venue_id" type="hidden" value="" />
-							<label for="comments">Comment:</label><br />
-							<textarea cols="40" rows="8" name="textarea" id="comments"></textarea>
-						</fieldset>
 					</div>
 				</div>
 				
 				<div data-role="page" id="deals_page" class="page">
 					<div data-role="header" data-position="inline" data-theme="b">
 						<h3>Available Deals</h3>
-						<a id="done_btn" href="#" data-role="button" data-icon="check" data-theme="b" class="ui-btn-right">Done</a>
+						<a id="done_btn" href="#main_page" data-role="button" data-icon="check" data-theme="b" class="ui-btn-right">Done</a>
 					</div>
-					<div data-role="content">
+					<div data-role="content" class="content">
 						<div id="deal_info_container">
-							<ul id="fs_special_text" data-role="listview" data-inset="true">
+							<ul id="fs_special_text" data-role="listview" data-inset="true" class="ui-corner-all">
 								<li></li>
 							</ul>
-							<ul id="groupon_deal_text" data-role="listview" data-inset="true">
+							<ul id="groupon_deal_text" data-role="listview" data-inset="true" class="ui-corner-all">
 								<li></li>
 							</ul>
 						</div>
