@@ -16,9 +16,10 @@
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <?php } ?>
 		<style type="text/css">
-            		@import url('http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css');
-            		@import url('css/styles.css');
-        	</style>
+		    @import url('css/reset.css');
+            @import url('http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css');
+            @import url('css/styles.css');
+        </style>
 	</head> 
 	<body> 
 
@@ -40,7 +41,7 @@
 							</ul>
 						</div>
 						<div id="list_container">
-							<ul id="venue_list" data-role="listview" data-filter="true" data-filter-placeholder="Filter Venues..." data-inset="true">
+							<ul id="venue_list" data-role="listview" data-inset="true">
 								<li></li>
 							</ul>
 						</div>
@@ -57,7 +58,7 @@
 							<fieldset>
 								<input id="venue_id" type="hidden" value="" />
 								<label for="comments">Comment:</label>
-								<textarea cols="55" rows="50" name="comments" id="comments"></textarea>
+								<textarea name="comments" id="comments"></textarea>
 								<fieldset class="ui-grid-a">
 									<div class="ui-block-a"><a id="back_btn" data-rel="back" href="#" data-role="button" data-icon="arrow-l" data-theme="b">Back</a></div>
 									<div class="ui-block-b"><a id="check_in_btn" href="#" data-role="button" data-icon="check" data-iconpos="right" data-theme="b">Check In</a></div>

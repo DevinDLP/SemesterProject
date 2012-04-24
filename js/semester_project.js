@@ -4,6 +4,9 @@ var geocoder;
 var marker;
 
 $(document).ready(function() {
+	if(document.URL.indexOf("#"))
+		$.mobile.changePage('#main_page');
+		
 	navigator.geolocation.getCurrentPosition(setLocation);
 	geocoder = new google.maps.Geocoder();
 	
@@ -15,6 +18,22 @@ $(document).ready(function() {
 	$('#refresh_list').click(function(event) {
 		event.preventDefault();
 		location.reload();
+	});
+	
+	$('#venue_page').live('pageshow', function(event, ui) {
+		$('#map_canvas').height($('#map_canvas').width());
+		if(!myMap) {
+			myMap = new google.maps.Map(document.getElementById('map_canvas'), {
+				zoom: 18,
+				center: marker.getPosition(),
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+			marker.setMap(myMap);
+		} else {
+			google.maps.event.trigger(myMap, 'resize');
+			myMap.setCenter(marker.getPosition());
+			myMap.setZoom(18);
+		}
 	});
 });
 
@@ -34,7 +53,7 @@ function getVenues(query) {
 		cache: false,
 		success: function(rsp) { 
 			if(rsp) {
-				$('#venue_list').empty().append('<li data-role="list-divider"><h1>Nearby Venues</h1></li>').append(rsp).listview('refresh');
+				$('#venue_list').empty().append('<li data-role="list-divider"><h1>Venues Nearby</h1></li>').append(rsp).listview('refresh');
 				$('.venue_link').each(function(index) {
 					$(this).click(function(event) {
 						event.preventDefault();
@@ -55,7 +74,7 @@ function getVenueInfo(venue_id) {
 		data: 'VENUE_ID=' + venue_id,
 		dataType: 'html',
 		cache: false,
-		success: function(rsp) { displayVenueInfo(rsp) }
+		success: function(rsp) { displayVenueInfo(rsp); }
 	});
 }
 
@@ -69,6 +88,7 @@ function displayVenueInfo(rsp) {
 		$('#venue_name').empty();
 		$('#vi_address').empty();
 		$('#vi_phone').empty();
+		$('#comments').val('');
 		
 		if(venue_obj.response.venue.location.address)
 			address += venue_obj.response.venue.location.address;
@@ -86,6 +106,8 @@ function displayVenueInfo(rsp) {
 			$('#venue_icon').attr('src', venue_obj.response.venue.categories[0].icon.prefix + venue_obj.response.venue.categories[0].icon.sizes[2] + venue_obj.response.venue.categories[0].icon.name);
 		if(address != '')
 			$('#vi_address').append(address + '');
+		else
+			$('#vi_address').append('N/A');
 		if(venue_obj.response.venue.contact.formattedPhone)
 			$('#vi_phone').append(venue_obj.response.venue.contact.formattedPhone + '');
 		else
@@ -103,19 +125,11 @@ function displayVenueInfo(rsp) {
 			});
 		}
 		
-		if(!myMap) {
-			myMap = new google.maps.Map(document.getElementById('map_canvas'), {
-				zoom: 18,
-				center: new google.maps.LatLng(lat, lon),
-				mapTypeId: google.maps.MapTypeId.ROADMAP
-			});
-			
+		if(!marker) {
 			marker = new google.maps.Marker({
-				position: new google.maps.LatLng(lat, lon),
-				map: myMap
+				position: new google.maps.LatLng(lat, lon)
 			});
 		} else {
-			myMap.setCenter(new google.maps.LatLng(lat, lon));
 			marker.setPosition(new google.maps.LatLng(lat, lon));
 		}
 		
@@ -158,22 +172,26 @@ function getDeals() {
 
 function displayDeals(deal_type, rsp) {
 	if(deal_type == 'groupon_deal') {
-		$('#groupon_deal_text').empty().append('<li data-role="list-divider"><h1>Groupon Deals</h1></li>').listview('refresh');
+		$('#groupon_deal_text').empty().append('<li data-role="list-divider"><h1>Groupon Deals</h1></li>');
 		var groupon_obj = $.parseJSON(rsp);
 		
 		if(groupon_obj.announcementTitle)
-			$('#groupon_deal_text').append('<li><a href="' + rsp.dealURL + '">' + rsp.announcementTitle + '</a></li>').listview('refresh');
+			$('#groupon_deal_text').append('<li><a href="' + rsp.dealURL + '">' + rsp.announcementTitle + '</a></li>');
 		else
-			$('#groupon_deal_text').append('<li>No Groupon deals for this location.</li>').listview('refresh');
+			$('#groupon_deal_text').append('<li>No Groupon deals for this location.</li>');
+			
+		$('#groupon_deal_text').listview('refresh');
 	} else if(deal_type == 'fs_special') {
-		$('#fs_special_text').empty().append('<li data-role="list-divider"><h1>Foursquare Specials</h1></li>').listview('refresh');
+		$('#fs_special_text').empty().append('<li data-role="list-divider"><h1>Foursquare Specials</h1></li>');
 		var fs_obj = $.parseJSON(rsp);
 		
 		if(fs_obj.response.specials.count > 0) {
 			for(special in fs_obj.response.specials.items)
-				$('#fs_special_text').append(special.message).listview('refresh');
+				$('#fs_special_text').append(special.message);
 		} else {
-			$('#fs_special_text').append('<li>No Foursquare specials for this location.</li>').listview('refresh');
+			$('#fs_special_text').append('<li>No Foursquare specials for this location.</li>');
 		}
+		
+		$('#fs_special_text').listview('refresh');
 	}
 }

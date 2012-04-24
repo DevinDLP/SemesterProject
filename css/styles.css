@@ -2,7 +2,6 @@ body {
 	background: #000;
 	margin: 0px;
 	padding: 0px;
-	height: 100%;
 }
 
 #primary_container {
@@ -27,10 +26,7 @@ body {
 	width: 95%;
 	max-width: 521px;
 	margin-left: 2.5%;
-}
-
-.content {
-	position: relative;
+	margin-bottom: 10px;
 }
 
 .page {
@@ -63,7 +59,7 @@ body {
 }
 
 #refresh_list {
-	margin-bottom: 25px;
+	margin-bottom: 30px;
 }
 
 #fs_login img {
@@ -82,7 +78,7 @@ body {
 	position: relative;
 	margin-top: 5px;
 	margin-left: -30px;
-	margin-top: 5px;
+	margin-top: 8px;
 }
 
 .venue_li p {
@@ -111,7 +107,7 @@ body {
 	float: left;
 	clear: right;
 	margin-left: 10px;
-	margin-top: 15px;
+	margin-top: 18px;
 	white-space: normal;
 }
 
@@ -139,10 +135,16 @@ body {
 	margin-bottom: 20px;
 }
 
+#check_in_btn, #back_btn {
+	margin-top: 20px;
+	margin-bottom: 0px;
+}
+
 #map_canvas {
+	display: block;
 	position: relative;
 	float: left;
 	width: 100%;
-	height: 300px;
 	border: 1px solid #000;
+	margin-bottom: -10px;
 }
