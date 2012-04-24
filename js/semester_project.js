@@ -47,7 +47,7 @@ function getVenues(query) {
 		cache: false,
 		success: function(rsp) { 
 			if(rsp) {
-				$('#venue_list').empty().append(rsp).listview('refresh');
+				$('#venue_list').empty().append('<li data-role="list-divider"><h1>Nearby Venues</h1></li>').append(rsp).listview('refresh');
 			} else {
 				$('#venue_list').empty().append('<li>No Venues Nearby</li>').listview('refresh');
 			}
@@ -86,6 +86,8 @@ function displayVenueInfo(rsp) {
 			$('#vi_address').append(' ' + venue_obj.response.venue.location.postalCode);
 		if(venue_obj.response.venue.contact.formattedPhone)
 			$('#vi_phone').append(venue_obj.response.venue.contact.formattedPhone);
+		else
+			$('#vi_phone').append('N/A');
 		$('#venue_name').append(venue_obj.response.venue.name);
 		$.mobile.changePage('#venue_page', { transition: 'slide' });
 	}
@@ -124,21 +126,20 @@ function getDeals() {
 
 function displayDeals(deal_type, rsp) {
 	if(deal_type == 'groupon_deal') {
+		$('#groupon_deal_text').empty().append('<li data-role="list-divider"><h1>Groupon Deals</h1></li>').listview('refresh');
 		var groupon_obj = $.parseJSON(rsp);
-		if(groupon_obj.announcementTitle) { 
-			$('#groupon_deal_text').empty().append(rsp.announcementTitle);
-		} else {
-			$('#groupon_deal_text').empty().append('<li>No Groupon deals for this location.</li>');
-		}
+		if(groupon_obj.announcementTitle)
+			$('#groupon_deal_text').append('<li><a href="' + rsp.dealURL + '">' + rsp.announcementTitle + '</a></li>').listview('refresh');
+		else
+			$('#groupon_deal_text').append('<li>No Groupon deals for this location.</li>').listview('refresh');
 	} else if(deal_type == 'fs_special') {
-		$('#fs_special_text').empty().append(rsp);
+		$('#fs_special_text').empty().append('<li data-role="list-divider"><h1>Foursquare Specials</h1></li>').listview('refresh');
 		var fs_obj = $.parseJSON(rsp);
 		if(fs_obj.response.specials.count > 0) {
-			for(special in fs_obj.response.specials.items) {
-				$('#fs_special_text').empty().append(special.message);
-			}
+			for(special in fs_obj.response.specials.items)
+				$('#fs_special_text').append(special.message).listview('refresh');
 		} else {
-			$('#fs_special_text').empty().append('<li>No Foursquare specials for this location.</li>');
+			$('#fs_special_text').append('<li>No Foursquare specials for this location.</li>').listview('refresh');
 		}
 	}
 }

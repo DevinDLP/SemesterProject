@@ -46,8 +46,7 @@ body {
 #list_container, #no_list {
 	display: none;
 	position: relative;
-	width: 95%;
-	margin-left: 2.5%;
+	margin: 0px;
 }
 
 #no_list {
@@ -55,12 +54,16 @@ body {
 	text-align: center;
 }
 
-.list {
-	position: relative;
+#venue_list {
+	margin-bottom: 0px;
 }
 
 #fs_login {
 
+}
+
+#refresh_list {
+	margin-bottom: 25px;
 }
 
 #fs_login img {
@@ -68,17 +71,32 @@ body {
 }
 
 .venue_li {
+	position: relative;
+}
 
+.venue_li a {
+	position: relative;
+	display: block;
+}
+
+.venue_li h3 {
+	position: relative;
+	margin-top: 5px;
+	margin-left: -30px;
+	margin-top: 5px;
 }
 
 .venue_li p {
-	margin-left: 5px;
-	min-height: 14px;
+	position: relative;
+	margin-top: 8px;
+	margin-left: -25px;
 }
 
 .venue_li img {
-	margin-top: 8px;
-	margin-left: 8px;
+	position: relative;
+	padding: 8px;
+	padding-right: 0px;
+	margin-left: -95px;
 }
 
 #venue_info_header {
@@ -94,11 +112,13 @@ body {
 	float: left;
 	clear: right;
 	margin-left: 10px;
+	margin-top: 15px;
 	white-space: normal;
 }
 
 #venue_icon {
 	float: left;
+	clear: left;
 }
 
 #venue_info_container {
